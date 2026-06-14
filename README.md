@@ -1,6 +1,6 @@
 # SimRace1.com — Website
 
-The official website for **SimRace1**, a professional sim racing venue in Swansea, Wales. Eight pro-grade simulators, 60+ laser-scanned tracks, open to ages 13+.
+The redesign unofficial demo for **SimRace1**, a professional sim racing venue in Swansea, Wales. Eight pro-grade simulators, 60+ laser-scanned tracks, open to ages 13+.
 
 Live site: [www.simrace1.com](https://www.simrace1.com)
 
