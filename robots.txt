@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+Disallow: /_old-site/
+
+# Block PetalBot
+User-agent: PetalBot
+Disallow: /
+
+# Crawl delay for overly enthusiastic bots
+User-agent: dotbot
+Crawl-delay: 10
+User-agent: AhrefsBot
+Crawl-delay: 10
+
+Sitemap: https://www.simrace1.com/sitemap.xml

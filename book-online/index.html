@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Book Online | SimRace1 Swansea — Racing Simulator Sessions from £12</title>
+  <meta name="description" content="Book a 60-minute racing simulator session at SimRace1 Swansea from £12 per person. Select your date, pick a time slot and pay on arrival. Groups of up to 8 welcome.">
+  <link rel="canonical" href="https://www.simrace1.com/book-online/">
+  <meta name="theme-color" content="#0a0c10">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="SimRace1">
+  <meta property="og:title" content="Book Online | SimRace1 Swansea">
+  <meta property="og:description" content="Book a 60-minute racing simulator session from £12 per person. Pay on arrival. Groups of up to 8 welcome.">
+  <meta property="og:url" content="https://www.simrace1.com/book-online/">
+  <meta property="og:image" content="https://www.simrace1.com/images/og-simrace1.jpg">
+  <meta property="og:locale" content="en_GB">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="48x48" href="/images/favicon-48.png">
+  <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+  <link rel="preload" href="/fonts/SairaCondensed-800.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/SairaCondensed-700.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/Barlow-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/Barlow-600.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+  /* =====================================================================
+     BOOKING WIZARD — scoped styles
+     ===================================================================== */
+
+  .bk-outer { background: var(--surface); border: 1px solid var(--line); overflow: hidden; }
+
+  /* Progress bar */
+  .bk-progress {
+    display: flex;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    background: rgba(0,0,0,0.25);
+    border-bottom: 1px solid var(--line);
+    gap: 0;
+  }
+  .bk-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+    flex: 0 0 auto;
+  }
+  .bk-step-num {
+    width: 2rem;
+    height: 2rem;
+    display: grid;
+    place-items: center;
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 0.95rem;
+    border: 2px solid rgba(255,255,255,0.15);
+    color: var(--muted);
+    transform: skewX(-8deg);
+    transition: background 0.3s, border-color 0.3s, color 0.3s;
+  }
+  .bk-step-num > span { transform: skewX(8deg); display: block; }
+  .bk-step-lbl {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    font-weight: 600;
+    transition: color 0.3s;
+    white-space: nowrap;
+  }
+  .bk-step.active .bk-step-num { background: var(--red); border-color: var(--red); color: #fff; }
+  .bk-step.active .bk-step-lbl { color: var(--text); }
+  .bk-step.done .bk-step-num { background: rgba(230,52,41,0.25); border-color: rgba(230,52,41,0.5); color: var(--red-hot); }
+  .bk-step.done .bk-step-lbl { color: var(--muted); }
+  .bk-track {
+    flex: 1;
+    height: 2px;
+    background: rgba(255,255,255,0.08);
+    margin: 0 0.6rem 1.4rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .bk-track-inner {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    background: var(--red);
+    width: 0%;
+    transition: width 0.4s var(--ease-spring);
+  }
+
+  /* Body layout */
+  .bk-layout {
+    display: grid;
+    grid-template-columns: 1fr 260px;
+    min-height: 420px;
+  }
+  .bk-main { padding: 2rem; border-right: 1px solid var(--line); }
+  .bk-sidebar {
+    padding: 1.5rem;
+    background: rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .bk-sidebar h3 {
+    font-size: 0.78rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1.2rem;
+    font-family: var(--body);
+  }
+  .sb-item {
+    padding: 0.7rem 0;
+    border-bottom: 1px solid var(--line);
+    display: none;
+  }
+  .sb-item.show { display: block; }
+  .sb-lbl { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 0.2rem; }
+  .sb-val { font-weight: 600; color: var(--text); font-size: 0.97rem; }
+  .sb-total {
+    margin-top: auto;
+    padding-top: 1.2rem;
+    display: none;
+  }
+  .sb-total.show { display: block; }
+  .sb-total-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); }
+  .sb-total-amt {
+    font-family: var(--display);
+    font-style: italic;
+    font-weight: 800;
+    font-size: 2.4rem;
+    color: #fff;
+    line-height: 1.1;
+  }
+  .sb-total-amt small { font-size: 0.38em; color: var(--muted); font-style: normal; }
+  .sb-arrive { font-size: 0.8rem; color: var(--muted); margin-top: 0.3rem; }
+
+  /* Step panels */
+  .bk-panel { display: none; }
+  .bk-panel.active { display: block; }
+
+  /* Step heading */
+  .bk-heading { margin-bottom: 0.4rem; font-size: clamp(1.5rem,3vw,2rem); }
+  .bk-sub { color: var(--muted); font-size: 0.97rem; margin-bottom: 1.8rem; }
+
+  /* ---- Step 1: simulator count ---- */
+  .sim-stepper {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    margin-bottom: 1.5rem;
+  }
+  .sim-stepper-btn {
+    width: 2.8rem; height: 2.8rem;
+    background: var(--surface-2);
+    border: 1.5px solid var(--line);
+    color: #fff; font-size: 1.6rem; font-weight: 300;
+    cursor: pointer; display: grid; place-items: center;
+    transform: skewX(-8deg);
+    transition: background 0.2s, border-color 0.2s, transform 0.2s var(--ease-spring);
+    line-height: 1;
+  }
+  .sim-stepper-btn > span { transform: skewX(8deg); display: block; }
+  .sim-stepper-btn:hover:not(:disabled) { background: var(--red); border-color: var(--red); transform: skewX(-8deg) translateY(-2px); }
+  .sim-stepper-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .sim-count-display {
+    font-family: var(--display);
+    font-style: italic;
+    font-weight: 800;
+    font-size: 3.2rem;
+    color: var(--red-hot);
+    min-width: 2.5rem;
+    text-align: center;
+    line-height: 1;
+  }
+  .sim-count-lbl { color: var(--muted); font-size: 0.9rem; line-height: 1.4; }
+
+  .sim-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 6px;
+    margin-bottom: 1.5rem;
+  }
+  .sim-slot {
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+    border: 1.5px solid var(--line);
+    background: var(--surface-2);
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 0.8rem;
+    color: #4b5563;
+    transform: skewX(-6deg);
+    transition: background 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s;
+    user-select: none;
+  }
+  .sim-slot > span { transform: skewX(6deg); display: block; }
+  .sim-slot.lit {
+    background: rgba(230,52,41,0.18);
+    border-color: rgba(230,52,41,0.55);
+    color: var(--red-hot);
+    box-shadow: 0 0 10px rgba(230,52,41,0.18);
+  }
+
+  .sim-price-tag {
+    font-family: var(--display);
+    font-style: italic;
+    font-weight: 800;
+    font-size: 2rem;
+    color: #fff;
+  }
+  .sim-price-tag small { font-size: 0.45em; color: var(--muted); font-style: normal; }
+
+  .wed-notice {
+    display: none;
+    margin-top: 1rem;
+    padding: 0.65rem 1rem;
+    background: rgba(76,194,255,0.08);
+    border: 1px solid rgba(76,194,255,0.22);
+    color: var(--blue);
+    font-size: 0.88rem;
+    line-height: 1.5;
+  }
+  .wed-notice.show { display: block; }
+
+  /* ---- Step 2: Calendar ---- */
+  .cal-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+  .cal-month-lbl {
+    font-family: var(--display);
+    font-style: italic;
+    font-weight: 700;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .cal-arr {
+    width: 2rem; height: 2rem;
+    background: none;
+    border: 1px solid var(--line);
+    color: #fff; cursor: pointer;
+    font-size: 1.1rem;
+    display: grid; place-items: center;
+    transform: skewX(-6deg);
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .cal-arr:hover:not(:disabled) { background: var(--red); border-color: var(--red); }
+  .cal-arr:disabled { opacity: 0.25; cursor: not-allowed; }
+
+  .cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 3px;
+  }
+  .cal-dow {
+    text-align: center;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 0 0 0.5rem;
+    font-weight: 600;
+  }
+  .cal-day {
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+    font-size: 0.88rem;
+    font-weight: 500;
+    border: 1px solid transparent;
+    cursor: pointer;
+    color: var(--text);
+    position: relative;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+    border-radius: 2px;
+  }
+  .cal-day.blank { background: none; border: none; cursor: default; }
+  .cal-day.disabled { color: #374151; cursor: default; }
+  .cal-day.past { color: #2a3040; cursor: default; }
+  .cal-day.today { color: var(--blue); font-weight: 700; }
+  .cal-day.avail:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.12); }
+  .cal-day.selected { background: var(--red) !important; color: #fff !important; border-color: var(--red) !important; box-shadow: 0 2px 12px rgba(230,52,41,0.4); }
+  .cal-day.avail::after {
+    content: '';
+    position: absolute;
+    bottom: 3px; left: 50%;
+    transform: translateX(-50%);
+    width: 4px; height: 4px;
+    background: var(--blue);
+    border-radius: 50%;
+  }
+  .cal-day.selected::after,
+  .cal-day.disabled::after,
+  .cal-day.past::after { display: none; }
+
+  .cal-legend {
+    display: flex; gap: 1.2rem;
+    margin-top: 0.9rem;
+    font-size: 0.8rem; color: var(--muted);
+  }
+  .cll { display: flex; align-items: center; gap: 0.4rem; }
+  .cll-dot { width: 7px; height: 7px; border-radius: 50%; flex: 0 0 auto; }
+  .cll-dot.blue { background: var(--blue); }
+  .cll-dot.red { background: var(--red); }
+  .cll-dot.grey { background: #374151; }
+
+  /* ---- Step 3: Time slots ---- */
+  .time-intro { color: var(--muted); margin-bottom: 1.2rem; font-size: 0.95rem; }
+  .time-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+  .time-chip {
+    padding: 0.75rem 0.4rem;
+    text-align: center;
+    background: var(--surface-2);
+    border: 1.5px solid var(--line);
+    cursor: pointer;
+    font-family: var(--display);
+    font-style: italic;
+    font-weight: 700;
+    font-size: 0.98rem;
+    color: var(--text);
+    transform: skewX(-6deg);
+    transition: background 0.18s, border-color 0.18s, box-shadow 0.18s, transform 0.18s var(--ease-spring);
+    user-select: none;
+  }
+  .time-chip > span { transform: skewX(6deg); display: block; }
+  .time-chip:hover { background: rgba(230,52,41,0.12); border-color: rgba(230,52,41,0.4); transform: skewX(-6deg) translateY(-2px); }
+  .time-chip.selected { background: var(--red); border-color: var(--red); color: #fff; box-shadow: 0 4px 14px rgba(230,52,41,0.4); }
+
+  /* ---- Step 4: Form ---- */
+  .bk-form { display: grid; gap: 1rem; margin-top: 0.5rem; }
+  .bk-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .bk-field { display: flex; flex-direction: column; gap: 0.35rem; }
+  .bk-field label {
+    font-size: 0.78rem; font-weight: 600;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .bk-field label em { font-style: normal; color: var(--red-hot); margin-left: 0.15rem; }
+  .bk-field input,
+  .bk-field textarea {
+    background: rgba(0,0,0,0.3);
+    border: 1.5px solid rgba(255,255,255,0.1);
+    color: var(--text);
+    padding: 0.7rem 0.9rem;
+    font-family: var(--body);
+    font-size: 0.97rem;
+    outline: none;
+    border-radius: 2px;
+    width: 100%;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    -webkit-appearance: none;
+  }
+  .bk-field input::placeholder,
+  .bk-field textarea::placeholder { color: #4b5563; }
+  .bk-field input:focus,
+  .bk-field textarea:focus {
+    border-color: var(--red);
+    box-shadow: 0 0 0 3px rgba(230,52,41,0.14);
+  }
+  .bk-field input.invalid { border-color: var(--red-hot); }
+  .bk-field .err { font-size: 0.78rem; color: var(--red-hot); display: none; margin-top: 0.1rem; }
+  .bk-field .err.show { display: block; }
+  .bk-field textarea { resize: vertical; min-height: 80px; }
+
+  /* ---- Success ---- */
+  .bk-success { text-align: center; padding: 1.5rem 0 0.5rem; }
+  .bk-success-icon { font-size: 3.5rem; display: block; margin-bottom: 0.8rem; }
+  .bk-success h2 { margin-bottom: 0.5rem; }
+  .bk-success p { color: var(--muted); max-width: 44ch; margin: 0 auto 1.5rem; }
+  .bk-success-box {
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    padding: 1rem 1.2rem;
+    margin: 0 auto 1.8rem;
+    text-align: left;
+    max-width: 440px;
+  }
+  .bk-success-row {
+    display: flex; justify-content: space-between;
+    padding: 0.42rem 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 0.93rem;
+    color: var(--muted);
+  }
+  .bk-success-row:last-child { border-bottom: 0; }
+  .bk-success-row strong { color: var(--text); }
+  .bk-success-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+  /* Nav footer */
+  .bk-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 2rem;
+    border-top: 1px solid var(--line);
+    background: rgba(0,0,0,0.15);
+  }
+  #bkBack { visibility: hidden; }
+
+  /* Error banner */
+  .bk-err-banner {
+    display: none;
+    background: rgba(230,52,41,0.1);
+    border: 1px solid rgba(230,52,41,0.3);
+    color: #ff8585;
+    padding: 0.6rem 1rem;
+    font-size: 0.88rem;
+    margin-top: 1rem;
+    line-height: 1.5;
+  }
+  .bk-err-banner.show { display: block; }
+
+  /* Responsive */
+  @media (max-width: 860px) {
+    .bk-layout { grid-template-columns: 1fr; }
+    .bk-sidebar { border-top: 1px solid var(--line); border-right: none; flex-direction: row; flex-wrap: wrap; gap: 0.5rem 1.5rem; padding: 1rem 1.5rem; }
+    .bk-sidebar h3 { width: 100%; margin-bottom: 0; }
+    .sb-item { border: none; padding: 0.4rem 0; }
+    .sb-total { margin-top: 0; padding-top: 0.4rem; border-top: none; }
+    .bk-main { border-right: none; }
+    .time-grid { grid-template-columns: repeat(3, 1fr); }
+    .bk-form-row { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 520px) {
+    .bk-main { padding: 1.4rem 1rem; }
+    .bk-nav { padding: 1rem; }
+    .sim-grid { grid-template-columns: repeat(4, 1fr); }
+    .time-grid { grid-template-columns: repeat(2, 1fr); }
+    .bk-progress { padding: 1rem; gap: 0; }
+    .bk-step-lbl { display: none; }
+    .bk-track { margin-bottom: 0; }
+  }
+  /* ---- Alternative booking methods ---- */
+  .alt-ways { margin-top: 3.5rem; padding-top: 2.5rem; border-top: 1px solid var(--line); }
+  .alt-ways-label { font-family: var(--display); font-style: italic; font-weight: 700; font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 1.25rem; }
+  .alt-ways-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  @media (max-width: 640px) { .alt-ways-grid { grid-template-columns: 1fr; } }
+  .alt-card {
+    display: flex; flex-direction: column; gap: 0.3rem;
+    padding: 1.35rem 1.25rem 1.4rem;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    clip-path: var(--notch);
+    text-decoration: none; color: var(--text);
+    transition: border-color 0.22s, background 0.22s, transform 0.24s var(--ease-spring);
+  }
+  .alt-card:hover { border-color: rgba(230,52,41,0.5); background: linear-gradient(150deg, rgba(230,52,41,0.07), var(--surface-2)); transform: translateY(-4px); }
+  .alt-card:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+  .alt-card:active { transform: translateY(-1px); }
+  .alt-icon {
+    width: 2.1rem; height: 2.1rem; display: grid; place-items: center;
+    background: rgba(230,52,41,0.12); border: 1px solid rgba(230,52,41,0.25);
+    transform: skewX(-8deg); margin-bottom: 0.55rem; flex-shrink: 0;
+  }
+  .alt-icon svg { width: 14px; height: 14px; fill: var(--red); transform: skewX(8deg); }
+  .alt-title { font-family: var(--display); font-style: italic; font-weight: 700; font-size: 1.08rem; text-transform: uppercase; letter-spacing: 0.04em; color: #fff; line-height: 1.1; }
+  .alt-detail { font-size: 0.84rem; color: var(--blue); margin-top: 0.15rem; }
+  </style>
+
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.simrace1.com/"},{"@type":"ListItem","position":2,"name":"Book Online","item":"https://www.simrace1.com/book-online/"}]}
+  </script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap nav-bar">
+    <a class="brand" href="/" aria-label="SimRace1 home">SimRace<span class="one">1</span><span class="tld">.com</span></a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-menu" aria-label="Toggle menu">
+      <span class="bars"></span>
+    </button>
+    <nav aria-label="Main navigation">
+      <ul class="nav-links" id="nav-menu">
+        <li><a href="/">Home</a></li>
+        <li><a href="/#experience">The Experience</a></li>
+        <li><a href="/carsandtracks/">Cars &amp; Tracks</a></li>
+        <li><a href="/#prices">Prices</a></li>
+        <li><a href="/#contact">Contact</a></li>
+        <li><a class="btn btn-primary btn-sm" href="/book-online/" aria-current="page"><span>Book Now</span></a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <section class="page-hero grain">
+    <div class="wrap">
+      <p class="sector">Lights Out In 3&hellip; 2&hellip; 1&hellip;</p>
+      <h1>Book Your <span class="accent">Race</span></h1>
+      <p class="lead"><strong style="color:var(--text);">&pound;12 per simulator, per session.</strong> Select your simulators, pick a date and time, and pay on arrival. Up to 8 racers can race head-to-head.</p>
+    </div>
+  </section>
+
+  <!-- ===== BOOKING WIZARD ===== -->
+  <section class="section-pad" id="booking">
+    <div class="wrap">
+
+      <!-- Wizard shell -->
+      <div class="bk-outer reveal">
+
+        <!-- Progress -->
+        <div class="bk-progress" id="bkProgress" role="navigation" aria-label="Booking steps">
+          <div class="bk-step active" id="bkS1" aria-current="step">
+            <div class="bk-step-num"><span>1</span></div>
+            <span class="bk-step-lbl">Simulators</span>
+          </div>
+          <div class="bk-track"><div class="bk-track-inner" id="bt1"></div></div>
+          <div class="bk-step" id="bkS2">
+            <div class="bk-step-num"><span>2</span></div>
+            <span class="bk-step-lbl">Date</span>
+          </div>
+          <div class="bk-track"><div class="bk-track-inner" id="bt2"></div></div>
+          <div class="bk-step" id="bkS3">
+            <div class="bk-step-num"><span>3</span></div>
+            <span class="bk-step-lbl">Time</span>
+          </div>
+          <div class="bk-track"><div class="bk-track-inner" id="bt3"></div></div>
+          <div class="bk-step" id="bkS4">
+            <div class="bk-step-num"><span>4</span></div>
+            <span class="bk-step-lbl">Details</span>
+          </div>
+        </div>
+
+        <!-- Content row -->
+        <div class="bk-layout">
+
+          <!-- Main panel -->
+          <div class="bk-main">
+
+            <!-- Step 1: Simulators -->
+            <div class="bk-panel active" id="bkPanel1">
+              <h2 class="bk-heading">How many <span class="accent">simulators?</span></h2>
+              <p class="bk-sub">Each simulator seats one racer. Race solo or head-to-head with up to 8.</p>
+
+              <div class="sim-stepper">
+                <button class="sim-stepper-btn" id="simMinus" aria-label="Remove simulator" disabled><span>&minus;</span></button>
+                <div>
+                  <div class="sim-count-display" id="simCount" aria-live="polite" aria-label="Simulators selected">1</div>
+                  <div class="sim-count-lbl">simulator<span id="simPlural"></span><br><span id="simDuration">60 min &mdash; &pound;12</span></div>
+                </div>
+                <button class="sim-stepper-btn" id="simPlus" aria-label="Add simulator"><span>+</span></button>
+              </div>
+
+              <div class="sim-grid" id="simGrid" aria-label="Simulator seats visualization">
+                <div class="sim-slot lit"><span>1</span></div>
+                <div class="sim-slot"><span>2</span></div>
+                <div class="sim-slot"><span>3</span></div>
+                <div class="sim-slot"><span>4</span></div>
+                <div class="sim-slot"><span>5</span></div>
+                <div class="sim-slot"><span>6</span></div>
+                <div class="sim-slot"><span>7</span></div>
+                <div class="sim-slot"><span>8</span></div>
+              </div>
+
+              <div class="sim-price-tag">&pound;<span id="simTotal">12</span><small> &mdash; pay on arrival</small></div>
+
+              <div class="wed-notice" id="wedNotice">
+                <strong>Wednesday unlocked!</strong> With 6+ simulators you can request a Wednesday evening slot (from 6pm). We&rsquo;ll confirm availability.
+              </div>
+            </div>
+
+            <!-- Step 2: Date -->
+            <div class="bk-panel" id="bkPanel2">
+              <h2 class="bk-heading">Pick your <span class="accent">date</span></h2>
+              <p class="bk-sub" id="calSub">We&rsquo;re open Thursday&ndash;Sunday. Monday &amp; Tuesday are closed.</p>
+
+              <div class="cal-nav">
+                <button class="cal-arr" id="calPrev" aria-label="Previous month">&#8249;</button>
+                <span class="cal-month-lbl" id="calMonthLbl"></span>
+                <button class="cal-arr" id="calNext" aria-label="Next month">&#8250;</button>
+              </div>
+              <div class="cal-grid" id="calGrid" role="grid" aria-label="Calendar"></div>
+              <div class="cal-legend">
+                <span class="cll"><span class="cll-dot blue"></span> Available</span>
+                <span class="cll"><span class="cll-dot red"></span> Selected</span>
+                <span class="cll"><span class="cll-dot grey"></span> Closed</span>
+              </div>
+              <div class="bk-err-banner" id="errDate">Please select a date to continue.</div>
+            </div>
+
+            <!-- Step 3: Time -->
+            <div class="bk-panel" id="bkPanel3">
+              <h2 class="bk-heading">Choose your <span class="accent">time</span></h2>
+              <p class="time-intro" id="timeIntro"></p>
+              <div class="time-grid" id="timeGrid" role="group" aria-label="Available time slots"></div>
+              <div class="bk-err-banner" id="errTime">Please select a time slot to continue.</div>
+            </div>
+
+            <!-- Step 4: Details -->
+            <div class="bk-panel" id="bkPanel4">
+              <h2 class="bk-heading">Your <span class="accent">details</span></h2>
+              <p class="bk-sub">No payment needed now &mdash; pay on arrival.</p>
+              <div class="bk-form" id="bkForm">
+                <div class="bk-form-row">
+                  <div class="bk-field">
+                    <label for="bkFirst">First name<em>*</em></label>
+                    <input type="text" id="bkFirst" name="first_name" autocomplete="given-name" placeholder="Lewis">
+                    <span class="err" id="errFirst">Please enter your first name.</span>
+                  </div>
+                  <div class="bk-field">
+                    <label for="bkLast">Last name<em>*</em></label>
+                    <input type="text" id="bkLast" name="last_name" autocomplete="family-name" placeholder="Hamilton">
+                    <span class="err" id="errLast">Please enter your last name.</span>
+                  </div>
+                </div>
+                <div class="bk-field">
+                  <label for="bkEmail">Email address<em>*</em></label>
+                  <input type="email" id="bkEmail" name="email" autocomplete="email" placeholder="you@example.com">
+                  <span class="err" id="errEmail">Please enter a valid email address.</span>
+                </div>
+                <div class="bk-field">
+                  <label for="bkPhone">Phone number<em>*</em></label>
+                  <input type="tel" id="bkPhone" name="phone" autocomplete="tel" placeholder="07700 900000">
+                  <span class="err" id="errPhone">Please enter your phone number.</span>
+                </div>
+                <div class="bk-field">
+                  <label for="bkNotes">Anything we should know? <span style="text-transform:none;letter-spacing:0;color:#6b7280;">(optional)</span></label>
+                  <textarea id="bkNotes" name="notes" placeholder="Accessibility requirements, special occasions, etc."></textarea>
+                </div>
+              </div>
+            </div>
+
+            <!-- Success -->
+            <div class="bk-panel" id="bkSuccess">
+              <div class="bk-success">
+                <span class="bk-success-icon">&#127937;</span>
+                <h2>You&rsquo;re on the <span class="accent">grid!</span></h2>
+                <p>Your booking request email should have opened. Once sent, we&rsquo;ll confirm by phone or email as soon as possible.</p>
+                <div class="bk-success-box" id="successBox"></div>
+                <div class="bk-success-actions">
+                  <a class="btn btn-primary" href="/"><span>Back to Home</span></a>
+                  <a class="btn btn-ghost" href="tel:+447368309848"><span>Call Us</span></a>
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /bk-main -->
+
+          <!-- Sidebar summary -->
+          <aside class="bk-sidebar" aria-label="Booking summary">
+            <h3>Session summary</h3>
+            <div class="sb-item" id="sbSims">
+              <div class="sb-lbl">Simulators</div>
+              <div class="sb-val" id="sbSimsVal"></div>
+            </div>
+            <div class="sb-item" id="sbDate">
+              <div class="sb-lbl">Date</div>
+              <div class="sb-val" id="sbDateVal"></div>
+            </div>
+            <div class="sb-item" id="sbTime">
+              <div class="sb-lbl">Start time</div>
+              <div class="sb-val" id="sbTimeVal"></div>
+            </div>
+            <div class="sb-total" id="sbTotal">
+              <div class="sb-total-label">Total (pay on arrival)</div>
+              <div class="sb-total-amt">&pound;<span id="sbTotalVal">12</span><small>/person</small></div>
+              <div class="sb-arrive">60-minute session</div>
+            </div>
+          </aside>
+
+        </div><!-- /bk-layout -->
+
+        <!-- Nav footer -->
+        <div class="bk-nav" id="bkNav">
+          <button class="btn btn-ghost btn-sm" id="bkBack"><span>&#8249; Back</span></button>
+          <button class="btn btn-primary btn-sm" id="bkNext"><span id="bkNextLbl">Next: Choose Date</span></button>
+        </div>
+
+      </div><!-- /bk-outer -->
+
+      <!-- Also book via -->
+      <div class="alt-ways reveal">
+        <p class="alt-ways-label">Prefer another way? Book via&hellip;</p>
+        <div class="alt-ways-grid">
+          <a class="alt-card" href="tel:+447368309848" aria-label="Call SimRace1">
+            <span class="alt-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 15.5c-1.2 0-2.4-.2-3.5-.6-.3-.1-.7 0-1 .2l-2.2 2.2c-2.8-1.4-5.1-3.7-6.6-6.5l2.2-2.2c.3-.3.4-.7.2-1C8.7 6.4 8.5 5.2 8.5 4c0-.6-.4-1-1-1H4c-.6 0-1 .4-1 1 0 9.4 7.6 17 17 17 .6 0 1-.4 1-1v-3.5c0-.6-.4-1-1-1z"/></svg>
+            </span>
+            <span class="alt-title">Telephone Us</span>
+            <span class="alt-detail">07368 309848</span>
+          </a>
+          <a class="alt-card" href="https://www.facebook.com/SimRace1/" rel="noopener" target="_blank" aria-label="Message SimRace1 on Facebook">
+            <span class="alt-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.5 22v-8h2.7l.4-3.2h-3.1V8.7c0-.9.3-1.6 1.6-1.6h1.7V4.2c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.4H7.4V14h2.7v8h3.4z"/></svg>
+            </span>
+            <span class="alt-title">Facebook Message</span>
+            <span class="alt-detail">@SimRace1</span>
+          </a>
+          <a class="alt-card" href="https://maps.google.com/?q=SimRace1,+30-31+High+Street,+Swansea+SA1+1LG" rel="noopener" target="_blank" aria-label="Get directions to SimRace1">
+            <span class="alt-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+            </span>
+            <span class="alt-title">Walk On In</span>
+            <span class="alt-detail">30&ndash;31 High Street, Swansea</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== BEFORE YOU RACE ===== -->
+  <div class="kerb" role="presentation"></div>
+  <section class="section-pad grain" style="background:var(--surface);">
+    <div class="wrap">
+      <div class="split">
+        <div class="reveal">
+          <p class="sector">Before You Race</p>
+          <h2>Check the <span class="accent">Restrictions</span></h2>
+          <ul class="checklist">
+            <li><span class="tick">&#10003;</span><span><strong>Minimum age 13</strong> &mdash; all racers must be 13 years or older.</span></li>
+            <li><span class="tick">&#10003;</span><span><strong>Minimum height 5ft</strong> &mdash; you need to reach the pedals properly.</span></li>
+            <li><span class="tick">&#10003;</span><span><strong>Maximum weight 20st / 130kg</strong> &mdash; set by the equipment we use.</span></li>
+            <li><span class="tick">&#10003;</span><span><strong>Up to 48&Prime; waist</strong> &mdash; race seats are tight, just like the real thing.</span></li>
+            <li><span class="tick">&#10003;</span><span><strong>Safety briefing</strong> &mdash; all racers must be able to listen to our safety introduction.</span></li>
+            <li><span class="tick">&#10003;</span><span><strong>Last hour is pre-book only</strong> &mdash; the final 60-minute slot on any day must be booked in advance.</span></li>
+          </ul>
+          <p style="margin-top:var(--space-3);color:var(--muted);">Additional, special or physical needs? <a href="tel:+447368309848">Call us before booking</a> and we&rsquo;ll do our best to help.</p>
+        </div>
+        <div>
+          <table class="hours" aria-label="Opening hours">
+            <tbody>
+              <tr class="closed"><th scope="row">Mon &amp; Tue</th><td>Closed</td></tr>
+              <tr><th scope="row">Wednesday</th><td>Groups of 6+ by request</td></tr>
+              <tr class="open"><th scope="row">Thu &amp; Fri</th><td>1pm &ndash; 8pm</td></tr>
+              <tr class="open"><th scope="row">Saturday</th><td>11am &ndash; 7pm</td></tr>
+              <tr class="open"><th scope="row">Sunday</th><td>11am &ndash; 5pm</td></tr>
+            </tbody>
+          </table>
+          <p style="margin-top:var(--space-2);color:var(--muted);font-size:0.92rem;">Can&rsquo;t find a suitable time? <a href="tel:+447368309848">Call 07368 309848</a> or <a href="https://www.facebook.com/SimRace1/" rel="noopener" target="_blank">message us on Facebook</a>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <a class="brand" href="/" aria-label="SimRace1 home" style="font-size:1.5rem;">SimRace<span class="one">1</span><span class="tld">.com</span></a>
+        <p style="margin-top:var(--space-2);max-width:38ch;">The Full Throttle Experience. Virtual motorsport racing on 8 pro-grade simulators &mdash; a product of Swansea, Wales.</p>
+        <div class="social-row">
+          <a href="https://www.facebook.com/SimRace1/" rel="noopener" target="_blank" aria-label="SimRace1 on Facebook">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.5 22v-8h2.7l.4-3.2h-3.1V8.7c0-.9.3-1.6 1.6-1.6h1.7V4.2c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.4H7.4V14h2.7v8h3.4z"/></svg>
+          </a>
+          <a href="https://www.instagram.com/simrace1.swansea/" rel="noopener" target="_blank" aria-label="SimRace1 on Instagram">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2c3.2 0 3.6 0 4.8.1 1.2.1 1.9.2 2.3.4.6.2 1 .5 1.4.9.4.4.7.9.9 1.4.2.4.4 1.1.4 2.3.1 1.3.1 1.6.1 4.8s0 3.6-.1 4.8c-.1 1.2-.2 1.9-.4 2.3-.2.6-.5 1-.9 1.4-.4.4-.9.7-1.4.9-.4.2-1.1.4-2.3.4-1.3.1-1.6.1-4.8.1s-3.6 0-4.8-.1c-1.2-.1-1.9-.2-2.3-.4-.6-.2-1-.5-1.4-.9-.4-.4-.7-.9-.9-1.4-.2-.4-.4-1.1-.4-2.3-.1-1.3-.1-1.6-.1-4.8s0-3.6.1-4.8c.1-1.2.2-1.9.4-2.3.2-.6.5-1 .9-1.4.4-.4.9-.7 1.4-.9.4-.2 1.1-.4 2.3-.4 1.2-.1 1.6-.1 4.8-.1zm0 2c-3.1 0-3.5 0-4.7.1-1.1.1-1.7.2-2.1.4-.5.2-.9.4-1.2.8-.4.4-.6.7-.8 1.2-.2.4-.3 1-.4 2.1-.1 1.2-.1 1.6-.1 4.7s0 3.5.1 4.7c.1 1.1.2 1.7.4 2.1.2.5.4.9.8 1.2.4.4.7.6 1.2.8.4.2 1 .3 2.1.4 1.2.1 1.6.1 4.7.1s3.5 0 4.7-.1c1.1-.1 1.7-.2 2.1-.4.5-.2.9-.4 1.2-.8.4-.4.6-.7.8-1.2.2-.4.3-1 .4-2.1.1-1.2.1-1.6.1-4.7s0-3.5-.1-4.7c-.1-1.1-.2-1.7-.4-2.1-.2-.5-.4-.9-.8-1.2-.4-.4-.7-.6-1.2-.8-.4-.2-1-.3-2.1-.4-1.2-.1-1.6-.1-4.7-.1zm0 3.3a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9zm0 7.4a2.9 2.9 0 1 0 0-5.8 2.9 2.9 0 0 0 0 5.8zm5.7-7.6a1.05 1.05 0 1 1-2.1 0 1.05 1.05 0 0 1 2.1 0z"/></svg>
+          </a>
+          <a href="https://www.tiktok.com/@simrace1" rel="noopener" target="_blank" aria-label="SimRace1 on TikTok">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.27 8.27 0 0 0 4.85 1.55V6.8a4.85 4.85 0 0 1-1.08-.11z"/></svg>
+          </a>
+        </div>
+      </div>
+      <nav aria-label="Footer navigation">
+        <h3>Quick Laps</h3>
+        <ul>
+          <li><a href="/#experience">The Experience</a></li>
+          <li><a href="/carsandtracks/">Cars &amp; Tracks</a></li>
+          <li><a href="/#prices">Prices</a></li>
+          <li><a href="/book-online/">Book Online</a></li>
+          <li><a href="/#contact">Contact</a></li>
+        </ul>
+      </nav>
+      <div>
+        <h3>Pit Wall</h3>
+        <ul>
+          <li><a href="tel:+447368309848">07368 309848</a></li>
+          <li><a href="https://maps.google.com/?q=SimRace1,+30-31+High+Street,+Swansea+SA1+1LG" rel="noopener" target="_blank">30&ndash;31 High Street,<br>Swansea, SA1 1LG</a></li>
+          <li>Thu&ndash;Fri: 1pm&ndash;8pm</li>
+          <li>Sat: 11am&ndash;7pm &middot; Sun: 11am&ndash;5pm</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; <span id="year">2026</span> SimRace1. All rights reserved.</span>
+      <span>Age 13+ &middot; Height 5ft+ &middot; The Full Throttle Experience</span>
+    </div>
+  </div>
+</footer>
+
+<script src="/main.js" defer></script>
+<script>
+(function () {
+  'use strict';
+
+  /* ---- Config ---- */
+  var PRICE = 12;
+  var VENUE_EMAIL = 'simrace1@yahoo.com';
+  var MAX_AHEAD_MONTHS = 3;
+
+  /* Day-of-week open hours (0=Sun … 6=Sat). Values are [openHour, closeHour]. */
+  var DAY_HOURS = { 0: [11,17], 4: [13,20], 5: [13,20], 6: [11,19] };
+  var WED_HOURS = [18, 21]; /* Wednesday evening for groups of 6+ */
+
+  /* ---- State ---- */
+  var bk = { step: 1, sims: 1, date: null, time: null };
+  var calYear, calMonth;
+
+  /* ---- DOM refs ---- */
+  function $id(id) { return document.getElementById(id); }
+  var simMinus  = $id('simMinus');
+  var simPlus   = $id('simPlus');
+  var simCount  = $id('simCount');
+  var simPlural = $id('simPlural');
+  var simDur    = $id('simDuration');
+  var simGrid   = $id('simGrid');
+  var simTotal  = $id('simTotal');
+  var wedNotice = $id('wedNotice');
+  var calPrev   = $id('calPrev');
+  var calNext   = $id('calNext');
+  var calMonLbl = $id('calMonthLbl');
+  var calGrid   = $id('calGrid');
+  var timeGrid  = $id('timeGrid');
+  var timeIntro = $id('timeIntro');
+  var bkBack    = $id('bkBack');
+  var bkNext    = $id('bkNext');
+  var bkNextLbl = $id('bkNextLbl');
+
+  /* ---- Helpers ---- */
+  function pad(n) { return n < 10 ? '0' + n : '' + n; }
+
+  function fmtHour(h) {
+    if (h === 0) return '12:00 am';
+    if (h < 12) return h + ':00 am';
+    if (h === 12) return '12:00 pm';
+    return (h - 12) + ':00 pm';
+  }
+
+  var MONTHS = ['January','February','March','April','May','June',
+                'July','August','September','October','November','December'];
+  var DAYS_SHORT = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+  var DAYS_LONG  = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+  function isOpenDay(d) {
+    var today = new Date(); today.setHours(0,0,0,0);
+    if (d < today) return false;
+    var dow = d.getDay();
+    if (dow === 0 || dow === 4 || dow === 5 || dow === 6) return true;
+    if (dow === 3 && bk.sims >= 6) return true;
+    return false;
+  }
+
+  function getSlots(d) {
+    var dow = d.getDay();
+    var hrs = (dow === 3) ? WED_HOURS : (DAY_HOURS[dow] || null);
+    if (!hrs) return [];
+    var slots = [];
+    for (var h = hrs[0]; h < hrs[1]; h++) slots.push(h);
+    return slots;
+  }
+
+  function fmtDate(d) {
+    return DAYS_LONG[d.getDay()] + ', ' + d.getDate() + ' ' + MONTHS[d.getMonth()] + ' ' + d.getFullYear();
+  }
+
+  function fmtDateShort(d) {
+    return pad(d.getDate()) + '/' + pad(d.getMonth()+1) + '/' + d.getFullYear();
+  }
+
+  /* ---- Step 1: Simulator stepper ---- */
+  function updateSims() {
+    var n = bk.sims;
+    simCount.textContent = n;
+    simPlural.textContent = n === 1 ? '' : 's';
+    simDur.textContent = '60 min — £' + (n * PRICE);
+    simTotal.textContent = n * PRICE;
+    simMinus.disabled = n <= 1;
+    simPlus.disabled  = n >= 8;
+
+    var slots = simGrid.querySelectorAll('.sim-slot');
+    slots.forEach(function (s, i) {
+      s.classList.toggle('lit', i < n);
+    });
+
+    wedNotice.classList.toggle('show', n >= 6);
+
+    /* Update sidebar */
+    $id('sbSimsVal').textContent = n + ' simulator' + (n === 1 ? '' : 's') + ' × £60 min';
+    $id('sbTotalVal').textContent = n * PRICE;
+
+    /* If date is on Wednesday but sims now < 6, reset date */
+    if (bk.date && bk.date.getDay() === 3 && n < 6) {
+      bk.date = null;
+      updateSidebar();
+    }
+  }
+
+  simMinus.addEventListener('click', function () { if (bk.sims > 1) { bk.sims--; updateSims(); } });
+  simPlus.addEventListener('click',  function () { if (bk.sims < 8) { bk.sims++; updateSims(); } });
+
+  /* ---- Step 2: Calendar ---- */
+  function initCal() {
+    var now = new Date();
+    calYear  = now.getFullYear();
+    calMonth = now.getMonth();
+  }
+
+  function renderCal() {
+    var now    = new Date();
+    var today  = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    var maxDate = new Date(now.getFullYear(), now.getMonth() + MAX_AHEAD_MONTHS, 1);
+
+    calMonLbl.textContent = MONTHS[calMonth] + ' ' + calYear;
+    calPrev.disabled = (calYear === now.getFullYear() && calMonth <= now.getMonth());
+    calNext.disabled = (calYear > maxDate.getFullYear() || (calYear === maxDate.getFullYear() && calMonth >= maxDate.getMonth()));
+
+    var html = '';
+    /* Day-of-week headers (Mon first for UK) */
+    var dowOrder = [1,2,3,4,5,6,0]; /* Mo-Su */
+    var dowLabels = ['Mo','Tu','We','Th','Fr','Sa','Su'];
+    dowLabels.forEach(function (l) { html += '<div class="cal-dow" role="columnheader">' + l + '</div>'; });
+
+    /* First day of month (JS: 0=Sun) */
+    var first = new Date(calYear, calMonth, 1);
+    var startDow = first.getDay(); /* 0=Sun */
+    /* Offset to Monday-first grid: Sun(0) → pos 6, Mon(1) → pos 0, etc. */
+    var offset = (startDow === 0) ? 6 : startDow - 1;
+    for (var b = 0; b < offset; b++) html += '<div class="cal-day blank" role="gridcell" aria-hidden="true"></div>';
+
+    var daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+    for (var d = 1; d <= daysInMonth; d++) {
+      var date = new Date(calYear, calMonth, d);
+      var isToday   = date.getTime() === today.getTime();
+      var isPast    = date < today;
+      var isAvail   = !isPast && isOpenDay(date);
+      var isSel     = bk.date && date.getTime() === bk.date.getTime();
+
+      var cls = 'cal-day';
+      if (isPast) cls += ' past disabled';
+      else if (!isAvail) cls += ' disabled';
+      else cls += ' avail';
+      if (isToday) cls += ' today';
+      if (isSel)   cls += ' selected';
+
+      var label = (isToday ? 'Today, ' : '') + DAYS_LONG[date.getDay()] + ' ' + d + ' ' + MONTHS[calMonth];
+      var iso   = calYear + '-' + pad(calMonth+1) + '-' + pad(d);
+      html += '<div class="' + cls + '" role="gridcell"' +
+        (isAvail ? ' tabindex="0" data-date="' + iso + '" aria-label="' + label + '"' : ' aria-disabled="true" aria-label="' + label + ' (unavailable)"') +
+        '>' + d + '</div>';
+    }
+
+    calGrid.innerHTML = html;
+
+    calGrid.querySelectorAll('.cal-day.avail').forEach(function (el) {
+      el.addEventListener('click', onDayClick);
+      el.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onDayClick.call(el); } });
+    });
+  }
+
+  function onDayClick() {
+    var iso = this.getAttribute('data-date');
+    var parts = iso.split('-');
+    bk.date = new Date(+parts[0], +parts[1]-1, +parts[2]);
+    bk.time = null; /* reset time when date changes */
+    renderCal();
+    updateSidebar();
+    $id('errDate').classList.remove('show');
+  }
+
+  calPrev.addEventListener('click', function () {
+    calMonth--;
+    if (calMonth < 0) { calMonth = 11; calYear--; }
+    bk.date = null;
+    renderCal();
+    updateSidebar();
+  });
+  calNext.addEventListener('click', function () {
+    calMonth++;
+    if (calMonth > 11) { calMonth = 0; calYear++; }
+    bk.date = null;
+    renderCal();
+    updateSidebar();
+  });
+
+  /* ---- Step 3: Time slots ---- */
+  function renderTimes() {
+    if (!bk.date) return;
+    var dow = bk.date.getDay();
+    var slots = getSlots(bk.date);
+    var dayName = DAYS_LONG[dow];
+
+    /* Opening-hours text */
+    var hrs = (dow === 3) ? WED_HOURS : (DAY_HOURS[dow] || null);
+    timeIntro.textContent = dayName + '’s sessions run ' + fmtHour(hrs[0]) + '–' + fmtHour(hrs[1]-1) +
+      '. Each slot is 60 minutes. Select your start time.';
+
+    var html = '';
+    slots.forEach(function (h) {
+      var sel = bk.time === h ? ' selected' : '';
+      html += '<div class="time-chip' + sel + '" role="button" tabindex="0" data-h="' + h + '" aria-label="' + fmtHour(h) + '">' +
+        '<span>' + fmtHour(h) + '</span></div>';
+    });
+    timeGrid.innerHTML = html;
+
+    timeGrid.querySelectorAll('.time-chip').forEach(function (el) {
+      el.addEventListener('click', function () {
+        bk.time = +this.getAttribute('data-h');
+        timeGrid.querySelectorAll('.time-chip').forEach(function (c) { c.classList.remove('selected'); });
+        this.classList.add('selected');
+        $id('sbTimeVal').textContent = fmtHour(bk.time);
+        $id('sbTime').classList.add('show');
+        $id('errTime').classList.remove('show');
+      });
+      el.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.click(); }
+      });
+    });
+  }
+
+  /* ---- Sidebar ---- */
+  function updateSidebar() {
+    $id('sbSims').classList.add('show');
+    if (bk.date) {
+      $id('sbDateVal').textContent = fmtDate(bk.date);
+      $id('sbDate').classList.add('show');
+    } else {
+      $id('sbDate').classList.remove('show');
+    }
+    if (bk.time !== null) {
+      $id('sbTimeVal').textContent = fmtHour(bk.time);
+      $id('sbTime').classList.add('show');
+    } else {
+      $id('sbTime').classList.remove('show');
+    }
+    $id('sbTotal').classList.toggle('show', bk.step >= 1);
+  }
+
+  /* ---- Progress bar ---- */
+  function updateProgress() {
+    [1,2,3,4].forEach(function (n) {
+      var el = $id('bkS' + n);
+      if (!el) return;
+      el.classList.remove('active','done');
+      el.removeAttribute('aria-current');
+      if (n < bk.step) el.classList.add('done');
+      else if (n === bk.step) { el.classList.add('active'); el.setAttribute('aria-current','step'); }
+
+      /* Fill track between n and n+1 */
+      var tr = $id('bt' + n);
+      if (tr) tr.style.width = (n < bk.step) ? '100%' : '0%';
+    });
+  }
+
+  /* ---- Step navigation ---- */
+  var NEXT_LABELS = {
+    1: 'Next: Choose Date',
+    2: 'Next: Choose Time',
+    3: 'Next: Your Details',
+    4: 'Confirm Booking'
+  };
+
+  function showStep(n) {
+    [1,2,3,4,'Success'].forEach(function (s) {
+      var el = $id('bkPanel' + s);
+      if (el) el.classList.remove('active');
+    });
+    var target = $id('bkPanel' + (n === 5 ? 'Success' : n));
+    if (target) target.classList.add('active');
+
+    bk.step = n;
+    updateProgress();
+    updateSidebar();
+
+    /* Back / next visibility */
+    var isSuccess = (n === 5);
+    $id('bkNav').style.display = isSuccess ? 'none' : '';
+    bkBack.style.visibility = (n <= 1) ? 'hidden' : 'visible';
+    if (!isSuccess) bkNextLbl.textContent = NEXT_LABELS[n] || 'Next';
+
+    if (n === 2) renderCal();
+    if (n === 3) renderTimes();
+  }
+
+  function validateStep() {
+    if (bk.step === 2) {
+      if (!bk.date) { $id('errDate').classList.add('show'); return false; }
+    }
+    if (bk.step === 3) {
+      if (bk.time === null) { $id('errTime').classList.add('show'); return false; }
+    }
+    if (bk.step === 4) {
+      return validateForm();
+    }
+    return true;
+  }
+
+  function validateForm() {
+    var ok = true;
+    function check(id, errId, testFn) {
+      var el = $id(id), er = $id(errId);
+      var valid = testFn(el.value.trim());
+      el.classList.toggle('invalid', !valid);
+      er.classList.toggle('show', !valid);
+      if (!valid) ok = false;
+    }
+    check('bkFirst', 'errFirst', function(v){ return v.length > 0; });
+    check('bkLast',  'errLast',  function(v){ return v.length > 0; });
+    check('bkEmail', 'errEmail', function(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); });
+    check('bkPhone', 'errPhone', function(v){ return v.replace(/\D/g,'').length >= 7; });
+    return ok;
+  }
+
+  bkNext.addEventListener('click', function () {
+    if (!validateStep()) return;
+    if (bk.step < 4) {
+      showStep(bk.step + 1);
+    } else {
+      submitBooking();
+    }
+  });
+
+  bkBack.addEventListener('click', function () {
+    if (bk.step > 1) showStep(bk.step - 1);
+  });
+
+  /* ---- Submit ---- */
+  function submitBooking() {
+    var first = $id('bkFirst').value.trim();
+    var last  = $id('bkLast').value.trim();
+    var email = $id('bkEmail').value.trim();
+    var phone = $id('bkPhone').value.trim();
+    var notes = $id('bkNotes').value.trim();
+
+    var dateStr  = fmtDate(bk.date);
+    var timeStr  = fmtHour(bk.time);
+    var total    = bk.sims * PRICE;
+    var subject  = 'SimRace1 Booking Request — ' + bk.sims + ' Simulator' + (bk.sims > 1 ? 's' : '') +
+                   ' — ' + fmtDateShort(bk.date) + ' ' + timeStr;
+
+    var body =
+      'Hi SimRace1,\n\n' +
+      'I would like to book the following session:\n\n' +
+      '  Simulators : ' + bk.sims + '\n' +
+      '  Date       : ' + dateStr + '\n' +
+      '  Start time : ' + timeStr + '\n' +
+      '  Duration   : 60 minutes\n' +
+      '  Total      : £' + total + ' (to be paid on arrival)\n\n' +
+      'My details:\n' +
+      '  Name  : ' + first + ' ' + last + '\n' +
+      '  Email : ' + email + '\n' +
+      '  Phone : ' + phone + '\n' +
+      (notes ? '  Notes : ' + notes + '\n' : '') +
+      '\nPlease confirm this booking. Thank you!';
+
+    window.location.href = 'mailto:' + VENUE_EMAIL +
+      '?subject=' + encodeURIComponent(subject) +
+      '&body=' + encodeURIComponent(body);
+
+    /* Success screen */
+    var box = $id('successBox');
+    box.innerHTML =
+      row('Name',       first + ' ' + last) +
+      row('Email',      email) +
+      row('Phone',      phone) +
+      row('Simulators', bk.sims + ' × 60 min') +
+      row('Date',       dateStr) +
+      row('Start time', timeStr) +
+      row('Total',      '£' + total + ' (pay on arrival)');
+
+    showStep(5);
+  }
+
+  function row(label, val) {
+    return '<div class="bk-success-row"><span>' + label + '</span><strong>' + val + '</strong></div>';
+  }
+
+  /* ---- Init ---- */
+  initCal();
+  updateSims();
+  updateProgress();
+  updateSidebar();
+  $id('sbSims').classList.add('show');
+  $id('sbTotal').classList.add('show');
+
+})();
+</script>
+</body>
+</html>
